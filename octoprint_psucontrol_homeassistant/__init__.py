@@ -104,12 +104,12 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
         self.send('http://192.168.1.40/apps/api/200/devices/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def turn_psu_on(self):
-        self._logger.debug("Switching PSU On")
-        self.send('http://192.168.1.40/apps/api/200/devices/on/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
+        self._logger.debug("Switching PSU On 2")
+        self.send('http://192.168.1.40/apps/api/200/devices/299/on?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def turn_psu_off(self):
-        self._logger.debug("Switching PSU Off")
-        self.send('http://192.168.1.40/apps/api/200/devices/off/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
+        self._logger.debug("Switching PSU Off 2")
+        self.send('http://192.168.1.40/apps/api/200/devices/299/off?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def get_psu_state(self):
         _entity_id = self.config['entity_id']
@@ -126,7 +126,7 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
 
         status = None
         try:
-            status = (data['switch'] == 'on')
+            status = (data['attributes.o.currentvalue'] == 'on')
         except KeyError:
             pass
 
