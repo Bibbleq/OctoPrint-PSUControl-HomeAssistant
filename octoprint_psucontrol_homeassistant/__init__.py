@@ -54,7 +54,7 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
         psucontrol_helpers['register_plugin'](self)
 
     def send(self, cmd, data=None):
-        url = self.config['address'] + '/api' + cmd
+        url = cmd
 
         headers = dict(Authorization='Bearer ' + self.config['api_key'])
 
@@ -62,9 +62,9 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
         verify_certificate = self.config['verify_certificate']
         try:
             if data:
-                response = requests.post(url, headers=headers, data=data, verify=verify_certificate)
+                response = requests.post(url)
             else:
-                response = requests.get(url, headers=headers, verify=verify_certificate)
+                response = requests.get(url)
         except (
                 requests.exceptions.InvalidURL,
                 requests.exceptions.ConnectionError
@@ -101,15 +101,15 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
         else:
             cmd = '/services/' + _domain + '/toggle'
         data = '{"entity_id":"' + _entity_id + '"}'
-        self.send(cmd, data)
+        self.send('http://192.168.1.40/apps/api/200/devices/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def turn_psu_on(self):
         self._logger.debug("Switching PSU On")
-        self.change_psu_state('on')
+        self.send('http://192.168.1.40/apps/api/200/devices/on/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def turn_psu_off(self):
         self._logger.debug("Switching PSU Off")
-        self.change_psu_state('off')
+        self.send('http://192.168.1.40/apps/api/200/devices/off/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb')
 
     def get_psu_state(self):
         _entity_id = self.config['entity_id']
@@ -117,7 +117,7 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
         if _domainsplit < 0:
             _entity_id = 'switch.' + _entity_id
 
-        cmd = '/states/' + _entity_id
+        cmd = 'http://192.168.1.40/apps/api/200/devices/299?access_token=92c3fc05-0d54-4041-9702-897df90c81bb'
 
         response = self.send(cmd)
         if not response:
@@ -126,7 +126,7 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
 
         status = None
         try:
-            status = (data['state'] == 'on')
+            status = (data['switch'] == 'on')
         except KeyError:
             pass
 
