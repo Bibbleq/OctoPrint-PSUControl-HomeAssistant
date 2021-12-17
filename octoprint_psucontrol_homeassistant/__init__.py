@@ -126,7 +126,7 @@ class PSUControl_HomeAssistant(octoprint.plugin.StartupPlugin,
 
         status = None
         try:
-            status = (data['attributes.o.currentvalue'] == 'on')
+            status = (data['attributes.0.currentvalue'] == 'on')
         except KeyError:
             pass
 
